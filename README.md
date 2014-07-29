@@ -1,4 +1,4 @@
 zerogames
 =========
 
-Games written in Python with a focus on applying best practices.
+Games written in Python and Java, for learning, teaching and fun in the pursuit of best-practices.
