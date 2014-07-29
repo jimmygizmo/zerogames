@@ -1,0 +1,36 @@
+#### Git Ignore File
+# General-purpose suggestions.
+# Leave commented-out until needed.
+
+
+# OSX-Generated
+.DS_Store
+#.localized
+
+
+# Windows-Generated
+#Thumbs.db
+#ehthumbs.db
+#Desktop.ini
+
+
+#### IntelliJ IDEA
+.idea
+#*.iml
+#*.iws
+
+
+#### Eclipse
+#.classpath
+#.project
+#.settings/
+
+
+#### Maven
+#log/
+#target/
+
+
+##
+#
+
