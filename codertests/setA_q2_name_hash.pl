@@ -5,9 +5,14 @@ use warnings FATAL => 'all';
 # Written by Jimmy Gizmo, July 9, 2018. Copyright 2018. MIT License.
 
 # PROBLEM STATEMENT:
-#
+# Write a Perl program to create an associative array ("hash") named "last_name" 
+# whose keys are the five first names "Mary", "James", "Thomas", "William", "Elizabeth". 
+# Set the corresponding values for these keys to be "Li", "O'Day", "Miller", "Garcia", "Davis". 
+# Then print out the five full names, each on its own line, sorted primarily by length of last name 
+# and with a secondary sort alphabetically by first name.
 
-# ASSUMPTIONS: Any punctuation marks in names are included in name length character count and
+# ASSUMPTIONS:
+# Any punctuation marks in names are included in name length character count and
 # sorting.
 
 # COMMENTS:
