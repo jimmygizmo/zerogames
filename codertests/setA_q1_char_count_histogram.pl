@@ -47,7 +47,7 @@ my %char_counts;
 for my $index (0 .. $index_last) {
     my $char = substr($input, $index, 1);
     $char_counts{$char} += 1;
-    print "$char ---- $char_counts{$char}\n";
+    #print "$char ---- $char_counts{$char}\n"; # Developer output
 }
 
 # Create a hash with keys designed to accomplish the primary and secondary sorting and values containing the
@@ -68,6 +68,7 @@ print"\n";
 for my $key (sort {$b cmp $a} keys %sorting_hash) {
     print "$sorting_hash{$key}\n";
 }
+print"\n";
 
 ##
 #
