@@ -34,25 +34,39 @@ use warnings FATAL => 'all';
 #
 # If no argument is supplied the program exits cleanly but otherwise there is no argument validation.
 #
+# In the display of the histogram, some character counts could be the same, so in addition to the primary sorting of
+# the counts and graphical bar length, secondary sorting will order the characters alphanumerically so adjacent entries
+# of the same count will be presented in an organize manner.
+#
 
 my $input = shift or exit(0); # @ARGV implied.
 my $index_last = length($input) - 1;
-my %histogram;
+my %char_counts;
 
+# Use a hash to perform the initial character counting
 for my $index (0 .. $index_last) {
     my $char = substr($input, $index, 1);
-    $histogram{$char} += 1;
-    print "$char ---- $histogram{$char}\n";
+    $char_counts{$char} += 1;
+    print "$char ---- $char_counts{$char}\n";
 }
 
-# my @keys = sort { $h{$a} <=> $h{$b} } keys(%h);
+# Create a hash with keys designed to accomplish the primary and secondary sorting and values containing the
+# the histogram output. Leading-zero padding will be used on the counts to allow correct sorting for counts that
+# may rise to multiple digits. Character counts up to 9999 are supported.
+my %sorting_hash;
 
-my @value_sorted_keys = sort { $histogram{$a} <=> $histogram{$b} } keys(%histogram);
+for my $key (keys %char_counts) {
+    my $numeric_part = "0000" . $char_counts{$key};
+    $numeric_part =~ /(....)$/g;
+    $numeric_part = $1;
+    my $sort_key = $numeric_part . "-" . $key;
+    $sorting_hash{$sort_key} = "    " . $key . ":" . "#"x$char_counts{$key};
+    #print "$sort_key => $sorting_hash{$sort_key}\n"; # Developer output
+}
 
-print "\n";
-# TODO - fix below here. Code above here works fine.
-foreach my $value_sorted_key (@value_sorted_keys) {
-    print $histogram{$value_sorted_key} . ":" . "#".$histogram{$value_sorted_key} . "\n"
+print"\n";
+for my $key (sort {$b cmp $a} keys %sorting_hash) {
+    print "$sorting_hash{$key}\n";
 }
 
 ##
