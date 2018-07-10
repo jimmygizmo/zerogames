@@ -16,7 +16,7 @@
 
 #### IntelliJ IDEA
 .idea
-#*.iml
+*.iml
 #*.iws
 
 
