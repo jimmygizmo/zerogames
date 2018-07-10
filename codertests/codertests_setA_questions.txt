@@ -1,0 +1,47 @@
+The following programming tests were required as part of the initial technical screening phase of a job application to a fortune 500 company for a DevOps position.
+
+Provide all solutions in Perl:
+
+Question 1: 
+Write code to generate the following histogram display based on the frequency of occurrence of characters in the first argument to the program. Example:
+
+   $ perl histogram.pl "Mississippi borders Tennessee."
+   s: #######
+   e: #####
+   i: ####
+    : ##
+   n: ##
+   p: ##
+   r: ##
+   .: #
+   M: #
+   T: #
+   b: #
+   d: #
+   o: #
+
+Question 2: 
+Write a Perl program to create an associative array ("hash") named "last_name" 
+whose keys are the five first names "Mary", "James", "Thomas", "William", "Elizabeth". 
+Set the corresponding values for these keys to be "Li", "O'Day", "Miller", "Garcia", "Davis". 
+Then print out the five full names, each on its own line, sorted primarily by length of last name 
+and with a secondary sort alphabetically by first name. 
+
+Question 3:
+Given a string consists of different types of brackets, write a function to determine the string is balanced.  For example, " ([])" and "[]{}" are balanced but "([)]" and "](){" are not.  You can assume these are the only characters in the string: ()[]{}
+
+Question 4: 
+If the string in Question 3 only consists of ( and ), how would it affect your solution from above? For example: " (())" or " (()("
+
+Question 5: 
+Suppose we want to preprocess JSON strings to strip out C style line comments.  An example might look like this:
+// this is a comment
+{ // another comment
+   true, "foo", // 3rd comment
+   "http://www.ariba.com" // comment after URL
+}
+Write a function to strip line comments without using regular expressions.  Think about the other corner cases.
+
+##
+#
+
