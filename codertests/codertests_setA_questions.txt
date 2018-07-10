@@ -1,11 +1,13 @@
 QUESTION SET A
 
-The following programming tests were required as part of the initial technical screening phase of a job application to a fortune 500 company for a DevOps position.
+The following programming tests were required as part of the initial technical screening phase of a job application
+to a fortune 500 company for a DevOps position.
 
 Provide all solutions in Perl:
 
 Question 1: 
-Write code to generate the following histogram display based on the frequency of occurrence of characters in the first argument to the program. Example:
+Write code to generate the following histogram display based on the frequency of occurrence of characters in the
+first argument to the program. Example:
 
    $ perl histogram.pl "Mississippi borders Tennessee."
    s: #######
@@ -30,10 +32,13 @@ Then print out the five full names, each on its own line, sorted primarily by le
 and with a secondary sort alphabetically by first name. 
 
 Question 3:
-Given a string consists of different types of brackets, write a function to determine the string is balanced.  For example, " ([])" and "[]{}" are balanced but "([)]" and "](){" are not.  You can assume these are the only characters in the string: ()[]{}
+Given a string consists of different types of brackets, write a function to determine the string is balanced.
+For example, " ([])" and "[]{}" are balanced but "([)]" and "](){" are not.  You can assume these are the only
+characters in the string: ()[]{}
 
 Question 4: 
-If the string in Question 3 only consists of ( and ), how would it affect your solution from above? For example: " (())" or " (()("
+If the string in Question 3 only consists of ( and ), how would it affect your solution from above?
+For example: " (())" or " (()("
 
 Question 5: 
 Suppose we want to preprocess JSON strings to strip out C style line comments.  An example might look like this:
