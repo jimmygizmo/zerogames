@@ -36,7 +36,7 @@ use warnings FATAL => 'all';
 #
 # In the display of the histogram, some character counts could be the same, so in addition to the primary sorting of
 # the counts and graphical bar length, secondary sorting will order the characters alphanumerically so adjacent entries
-# of the same count will be presented in an organize manner. The example output from the problem statement does not
+# of the same count will be presented in an organized manner. The example output from the problem statement does not
 # show this secondary sorting, but it is appropriate to include and does not complicate the solution below.
 #
 
