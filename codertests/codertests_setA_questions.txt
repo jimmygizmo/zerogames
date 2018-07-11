@@ -38,7 +38,7 @@ characters in the string: ()[]{}
 
 Question 4: 
 If the string in Question 3 only consists of ( and ), how would it affect your solution from above?
-For example: " (())" or " (()("
+For example: "(())" or " (()("
 
 Question 5: 
 Suppose we want to preprocess JSON strings to strip out C style line comments.  An example might look like this:
