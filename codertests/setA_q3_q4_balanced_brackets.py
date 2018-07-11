@@ -26,13 +26,17 @@
 
 # COMMENTS:
 
-test_input_strings = ['([])',
-                      '[]{}',
-                      '([)]',
-                      '](){',
+test_input_strings = ['([])',  # Covers question # 3
+                      '[]{}',  # Covers question # 3
+                      '([)]',  # Covers question # 3
+                      '](){',  # Covers question # 3
                       '(())',  # Covers question # 4
-                      '(()('   # Covers question # 4
+                      '(()('  # Covers question # 4
                       ]
+
+test_input_strings_q4 = ['(())',  # Covers question # 4
+                         '(()('  # Covers question # 4
+                         ]
 
 left_bracket_set = set('([{')
 
@@ -59,13 +63,38 @@ def balanced_brackets(test_string):
     return len(stack_array) == 0
 
 
+def balanced_brackets_simplified_q4(test_string):
+    if len(test_string) % 2 != 0:  # Only an even number of characters can be balanced
+        return False
+    stack_array = []
+    for cursor in test_string:
+        if cursor == '(':
+            stack_array.append(cursor)
+        else:
+            if len(stack_array) == 0:
+                return False
+            last_left_bracket = stack_array.pop()
+            if (last_left_bracket, cursor) != ('(', ')'):
+                return False
+    return len(stack_array) == 0
+
+
 print
 for test_string in test_input_strings:
-    print "TEST STRING: " + test_string
+    print "Q3. TEST STRING: " + test_string
     if balanced_brackets(test_string):
-        print "STATE: balanced"
+        print "Q3. STATE: balanced"
     else:
-        print "STATE: not-balanced"
+        print "Q3. STATE: not-balanced"
+    print
+
+print
+for test_string in test_input_strings_q4:
+    print "Q4. TEST STRING: " + test_string
+    if balanced_brackets_simplified_q4(test_string):
+        print "Q4. STATE: balanced"
+    else:
+        print "Q4. STATE: not-balanced"
     print
 
 ##
