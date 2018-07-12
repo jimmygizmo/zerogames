@@ -220,6 +220,9 @@ class App(Base):
         # TODO: Implement depth. Currently lacking the method to calculate depth.
         self.node_count = 0  # TODO: Possibly move this to a static/class attribute of the Node class.
 
+        self.output_data = {}  # Initialize the dictionary which will contain any output data generated during the
+        # tree traversal and file scanning.
+
         self.arg = cmd_line_parser.parse_args()  # A namespace object is returned to self.arg here. See argparse docs.
 
         # This log line is here for illustrative purposes and is only active if you change config.default_log_level
@@ -239,7 +242,8 @@ class App(Base):
     def run(self):
         self.log.info("Application " + self.cfg.app_nick + " is now running.")
 
-        abs_path = os.path.abspath(self.arg.path)
+        abs_path = os.path.abspath(self.arg.root_dir)  # Arg name changed from original 'path' to 'root_dir' in order
+        # to meet exact program specifications. TODO: Maybe change argument name back to 'path' later if appropriate.
         self.log.debug("os.path.abspath of path is: " + str(abs_path))
 
         if not os.path.isdir(abs_path):
@@ -296,10 +300,23 @@ class App(Base):
                 current_node.add_file(new_file_node)
                 self.log.debug("- - - - Node count: " + str(Node.count))
                 # Files are just added to their current node with no recursion involved.
+                ########
+                self.process_file(abs_path_dir_item, self.arg.keyword)
 
         self.log.debug("- - Completed processing directory: " + current_node.path)
 
         return current_node
+
+    def process_file(self, file, rex):
+        with open(file) as file_obj:
+            fdata = file_obj.read()
+
+        print fdata
+
+        ## TODO: CONTINUE HERE WITH REGEX SEARCH
+        ## TODO: CONTINUE HERE WITH REGEX SEARCH
+
+        # self.output_data will be accessed here like this
 
 
 class Node(object):
@@ -479,12 +496,18 @@ cmd_line_parser.add_argument(
          ' the log or also to user output will depend on the application.')
 
 cmd_line_parser.add_argument(
-    '--path',
+    '--root_dir',
     action='store',
-    help='Path at which to begin the traversal of the filesystem. This must be a directory. This requirement could be'
-         ' lifted if this program would process any node, file or directory, even a single file as the root. It is'
-         ' an arbitrary convention to require this as a directory, applied because the focus of this app is traversal.'
+    help='Path at which to begin the traversal of the filesystem. This must be a directory.'
          ' String representing a valid path to a directory on the current filesystem.')
+    # --root_dir is currently required to be a directory to meet provided specifications, but technically it could be
+    # any kind of node.
+
+cmd_line_parser.add_argument(
+    '--keyword',
+    action='store',
+    help='A regular expression to be used to search any file encountered in the tree. If the regular expression matches'
+         ' anywhere in a file, then the file will be identified and included in output.')
 
 # Command-line parsing has now been configured and we can start initializing and then running the application.
 
