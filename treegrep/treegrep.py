@@ -229,6 +229,8 @@ class App(Base):
         # to DEBUG in the code. Command-line options have not been processed yet so --verbose cannot take effect yet.
         self.log.debug("App class instantiated. Command-line options will now be processed.")
 
+        self.rex = None
+
         self.process_cmd_line()
 
     def process_cmd_line(self):  # The term "command-line options" is interchangeable with "command-line arguments"
@@ -237,6 +239,8 @@ class App(Base):
             self.log.debug("Verbose mode is now active. Log level set to DEBUG.")
         else:
             self.log.info("Using default log level of " + logging.getLevelName(self.cfg.default_log_level))
+
+        self.rex = re.compile(self.arg.keyword)
 
 
     def run(self):
@@ -261,6 +265,11 @@ class App(Base):
 
         # Complete the tree by recursively processing the root node to add all child nodes, returning the full tree.
         self.tree = self.process_dir(root_node)
+
+        ########
+        ########
+        print "RESULTS:\n"
+        print self.output_data
 
     def process_dir(self, current_node):
         Node.current_traversal_depth += 1  # Class attribute. # TODO: Should we access it like this here?
@@ -301,22 +310,29 @@ class App(Base):
                 self.log.debug("- - - - Node count: " + str(Node.count))
                 # Files are just added to their current node with no recursion involved.
                 ########
-                self.process_file(abs_path_dir_item, self.arg.keyword)
+                if self.process_file(abs_path_dir_item):
+                    if abs_path_dir_item in self.output_data.keys():
+                        self.output_data[abs_path_dir_item] += 1
+                    else:
+                        self.output_data[abs_path_dir_item] = 1
+                
+
 
         self.log.debug("- - Completed processing directory: " + current_node.path)
 
         return current_node
 
-    def process_file(self, file, rex):
+    def process_file(self, file):
         with open(file) as file_obj:
             fdata = file_obj.read()
 
-        print fdata
+        print "********" + fdata + "\n"
 
-        ## TODO: CONTINUE HERE WITH REGEX SEARCH
-        ## TODO: CONTINUE HERE WITH REGEX SEARCH
-
-        # self.output_data will be accessed here like this
+        if self.rex.match(fdata):
+            self.log.info("- - - - Keyword/regex * MATCHED *: " + str(file))
+            return True
+        else:
+            return False
 
 
 class Node(object):
@@ -338,6 +354,7 @@ class Node(object):
         self.attributes = attributes # file attributes for Nodes of type 'file'
         self.children = []  # list of child Node objects for Nodes of type 'dir'
         self.files = []  # list of contained Node objects for Nodes of type 'file'
+        self.file_regex_match_count = 0  # Count of files which match the keyword/regex supplied in program arguments
 
         # TODO: We should generate/carry attributes for directories as well. Why not?
 
