@@ -266,10 +266,11 @@ class App(Base):
         # Complete the tree by recursively processing the root node to add all child nodes, returning the full tree.
         self.tree = self.process_dir(root_node)
 
-        ########
-        ########
-        print "RESULTS:\n"
+        print
+        print "RESULTS:"
+        print
         print self.output_data
+        print
 
     def process_dir(self, current_node):
         Node.current_traversal_depth += 1  # Class attribute. # TODO: Should we access it like this here?
@@ -309,14 +310,14 @@ class App(Base):
                 current_node.add_file(new_file_node)
                 self.log.debug("- - - - Node count: " + str(Node.count))
                 # Files are just added to their current node with no recursion involved.
-                ########
-                if self.process_file(abs_path_dir_item):
-                    if abs_path_dir_item in self.output_data.keys():
-                        self.output_data[abs_path_dir_item] += 1
-                    else:
-                        self.output_data[abs_path_dir_item] = 1
-                
 
+                # Update output data structure
+                if self.process_file(abs_path_dir_item):
+                    (containing_dir, file_part) = os.path.split(abs_path_dir_item)  # The portable way
+                    if containing_dir in self.output_data.keys():
+                        self.output_data[containing_dir] += 1
+                    else:
+                        self.output_data[containing_dir] = 1
 
         self.log.debug("- - Completed processing directory: " + current_node.path)
 
@@ -325,9 +326,6 @@ class App(Base):
     def process_file(self, file):
         with open(file) as file_obj:
             fdata = file_obj.read()
-
-        print "********" + fdata + "\n"
-
         if self.rex.match(fdata):
             self.log.info("- - - - Keyword/regex * MATCHED *: " + str(file))
             return True
@@ -356,20 +354,20 @@ class Node(object):
         self.files = []  # list of contained Node objects for Nodes of type 'file'
         self.file_regex_match_count = 0  # Count of files which match the keyword/regex supplied in program arguments
 
-        # TODO: We should generate/carry attributes for directories as well. Why not?
-
     def add_child(self, child):
         if not self.node_type == "dir":
             print "Adding child Node failed. Current node is not of type 'dir'. Only dir Nodes can contain child " \
             "dir Nodes."
-            return  # Not currently a fatal error. TODO: How to handle exceptions since we don't want logging in here.
+            return  # Not currently a fatal error. TODO: Figure out a good way to handle exceptions within the Node
+            # class because we don't want logging in this class.
         else:
             self.children.append(child)
 
     def add_file(self, file):
         if not self.node_type == "dir":
             print "Adding file Node failed. Current node is not of type 'dir'. Only dir Nodes can contain file."
-            return  # Not currently a fatal error. TODO: How to handle exceptions since we don't want logging in here.
+            return  # Not currently a fatal error. TODO: Figure out a good way to handle exceptions within the Node
+            # class because we don't want logging in this class.
         else:
             self.children.append(file)
 
@@ -438,7 +436,7 @@ def main():
 
 ################################################################################
 # These bars are 80 characters wide, useful for fixed-formatting in argparse.
-# Read below about full-width-wrapping vs. fixed-formatting limited to 80 chars.
+# Use triple-quotes """ around the description to achieve fixed-formatting.
 ################################################################################
 
 cmd_line_parser = argparse.ArgumentParser(
