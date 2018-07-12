@@ -272,6 +272,16 @@ class App(Base):
         print self.output_data
         print
 
+        # Generate bar chart. Output csv data for D3 bar chart graphing module.
+        with open("./bar-data.csv", "w+") as file_obj:  # w+ overwrite file if it exists
+            line = "date,value\n"  # D3 fields header. NOTE: date is an artifact of adapting the graph I had. Ignore.
+            file_obj.write(line)
+            for key in self.output_data.keys():
+                val = self.output_data[key]
+                line = '"' + key + '",' + str(val) + "\n"
+                file_obj.write(line)
+
+
     def process_dir(self, current_node):
         Node.current_traversal_depth += 1  # Class attribute. # TODO: Should we access it like this here?
         # TODO: OR .. we could make a class method to: increase_current_traversal_depth()
@@ -440,66 +450,13 @@ def main():
 ################################################################################
 
 cmd_line_parser = argparse.ArgumentParser(
-    description="""This is the program description shown when the --help or -h command-line options are invoked."""
-                """Notice how triple-double quotes are used here and also notice how the first part of this """
-                """description has opening and closing quotes on each line with included space characters after """
-                """the last word on each line. The lower part of this description needs to use fixed-formatting """
-                """because we are using indentation and blank lines to highlight some important commands for our """
-                """program. It is this fixed-formatting part at the end which requires us to use triple-double """
-                """quotes in this manner for the entire description. Since we don't need the fixed-formatting """
-                """for the first part of the description and we do want the lines to wrap, that is why we also have """
-                """closing quotes up here. In the lower part, we must continue using the same kind of quotes """
-                """because this entire description is a single attribute and we cannot mix quote types here. """
-                """If you do not need any fancy fixed-formatting in your description then you can simplify the """
-                """quoting, but helping the reader with formatting and thorough help text can be worth the """
-                """effort. The triple quotes mean we do not have to escape apostrophes or newlines and it also """
-                """means we can easily read and edit our own fixed formatting here in the code itself. So this part """
-                """of the description text will wrap at the full console width where it is displayed, but the below """
-                """fixed-formatting part we will hard-wrap at no more than 80 characters. The PEP8 coding standards """
-                """being followed in this python code means our code line width is no more than 120 characters, but """
-                """the maximum width of fixed-formatted help text should not exceed 80 characters and this is the """
-                """standard you will see in most if not all unix/linux command help displayed in a console.
-
-            Now we are in the section which drives the use of the triple-quotes.
-            Note that an 80-character-line ends -------------here------------->|
-            This fixed-format section stays within 80 characters in width and we
-            are also indenting because this is a special section, now more for
-            instructions, rather than the general description we did above with
-            the wrapping-lines which will go the full width of any console.
-            We have a blank line and indentation included already before this
-            section and the indentation makes this special paragraph stand out
-            because we are highlighting an important aspect of using this
-            program. This information is a little different from the general
-            program description which goes above and which should wrap lines.
-
-            This section here could also wrap lines and if we wanted to do
-            that then we would just have continued to use closing quotes with
-            needed space characters at the end down to this point. You do not
-            have to format things like this, but careful formatting can really
-            help users get to important information faster. While this paragraph
-            could have used wrapping, the part below here cannot as we must have
-            the fixed formatting to have the indentation and blank lines needed
-            to clearly document the commands we list below.
-
-            Your program does not need to have a --command option or even help
-            text which is this complex. The idea of a --command option which
-            supports many different commands is just a good example of something
-            which is best documented in this manner. Using the help attribute of
-            individual argparse add_option items does not allow you to
-            communicate this information as clearly as you can in the
-            description with the method I have shown here. And now even more
-            formatting of a very fixed nature, for example:
-
-            Commands (via --command):
-
-                load = Load all widgets and harvest widget data.
-
-                convert = Convert all loaded widgets and data into doo-dads.
-
-                save = Save all doo-dads.
-
-                dump = Serialize all widgets into separate xml files.
-            """,
+    description="""    This program takes an argument root_dir and traverses the
+    entire directory tree under it, scanning any files encountered for a match
+    to the regular expression supplied in the --keyword argument. A log file is 
+    generated which can be put into debug logging mode using the --verbose
+    argument. Upon completion, a CSV file is output for rendering of a bar chart
+    of the results. A data structure in python-dictionary/JSON format is also
+    printed upon completion.""",
     formatter_class=argparse.RawDescriptionHelpFormatter,
     add_help=True)
 
