@@ -3,7 +3,7 @@ QUESTION SET A
 The following programming tests were required as part of the initial technical screening phase of a job application
 to a fortune 500 company for a DevOps position.
 
-Provide all solutions in Perl:
+Provide solutions in either Perl or Python:
 
 Question 1: 
 Write code to generate the following histogram display based on the frequency of occurrence of characters in the
