@@ -6,6 +6,7 @@ import sys
 import turtle
 import math
 import random
+import time
 
 DEBUG = True
 
@@ -43,6 +44,11 @@ window.title("Dia Dungeon Mazer")
 window.setup(width=WINDOW_WIDTH, height=WINDOW_HEIGHT,
              startx=WINDOW_STARTX, starty=WINDOW_STARTY)
 window.tracer(0)
+
+# Access Tkinter canvas object to bring Turtle window to the foreground
+canvas = window.getcanvas().winfo_toplevel()
+canvas.call("wm", "attributes", ".", "-topmost", "1")
+canvas.call("wm", "attributes", ".", "-topmost", "0")
 
 sprites = [
             "cave_wall32x32.gif",
@@ -344,26 +350,37 @@ for monster in monsters:
     turtle.ontimer(monster.move, t=250)
 
 loop = True
-while (loop is True):
-    for treasure in treasures:
-        if player.collision(treasure):
-            player.score += treasure.value
-            print("Player gold pieces: {}".format(player.score))
-            treasure.dispose()
-            treasures.remove(treasure)
+try:
+    while (loop is True):
+        for treasure in treasures:
+            if player.collision(treasure):
+                player.score += treasure.value
+                print("Player gold pieces: {}".format(player.score))
+                treasure.dispose()
+                treasures.remove(treasure)
 
-    for monster in monsters:
-        if player.collision(monster):
-            print "You died a horrible death " \
-                "at the hands of a {}!".format(monster.type)
-            loop = False
+        for monster in monsters:
+            if player.collision(monster):
+                print "You died a horrible death " \
+                    "at the hands of a {}!".format(monster.type)
+                loop = False
 
-    window.update()
+        window.update()
+except Exception as e:
+    e_string = str(e)
+    if DEBUG:
+        print "Main loop caught Exception: {}".format(e_string)
+    if e_string == "turtle.Terminator":
+        print "EXITING."
+        time.sleep(1)
+        sys.exit(0)
 
-
-# print "HIT SPACE TO EXIT."
-# TODO: Need something like turtle.waitkey() which actually does not exist
-# turtle.waitkey("Space")
+# TODO: Can't do window.bye() here for the case of a mouse-click-closed
+# macos window. this worked fine for ending the game from code, but throws
+# an ugly error for exception-caight exiting because there is no longer
+# a window object to call bye() against. Solution is to exit correctly,
+# perhaps using window.bye() but DO SO IN THE CODE WHERE GAME IS ENDING,
+# not here as a catchall the is hit whe the exception handling falls through.
 window.bye()
 sys.exit(0)
 
