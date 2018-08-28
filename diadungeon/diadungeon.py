@@ -6,9 +6,9 @@ DEBUG = False
 
 # Playing area of grid will be 600 x 600 with 50 padding all around, hence
 # the window size of 700 x 700
-WINDOW_WIDTH = 700
-WINDOW_HEIGHT = 700
-UNIT_SIZE = 24  # Individual grid units are 24 x 24 pixels each
+WINDOW_WIDTH = 840
+WINDOW_HEIGHT = 840
+UNIT_SIZE = 32  # Individual grid units are 24 x 24 pixels each
 UNITS = 25  # Number of grid units in any row or column of the square grid
 HALF_GRID_UNITS_WHOLE = int(UNITS / 2)  # int() drops remainder
 SPLIT = (HALF_GRID_UNITS_WHOLE * UNIT_SIZE)
@@ -23,10 +23,12 @@ window.setup(WINDOW_WIDTH, WINDOW_HEIGHT)
 window.tracer(0)
 
 sprites = [
-            "mossy_wall24x24.gif",
-            "green_elf_right24x24.gif",
-            "green_elf_left24x24.gif",
-            "blue_jewell24x24.gif"
+            "cave_wall32x32.gif",
+            "player_right32x32.gif",
+            "player_left32x32.gif",
+            "cyclops_right32x32.gif",
+            "cyclops_left32x32.gif",
+            "treasure_chest32x32.gif"
             ]
 
 for sprite in sprites:
@@ -47,7 +49,7 @@ class Player(turtle.Turtle):
     def __init__(self):
         # turtle.Turtle.__init__(self)  # Equivalent to following line
         super(Player, self).__init__()
-        self.shape("green_elf_right24x24.gif")
+        self.shape("player_right32x32.gif")
         self.color("blue")
         self.penup()
         self.speed(0)
@@ -68,14 +70,14 @@ class Player(turtle.Turtle):
     def lt(self):
         newx = player.xcor() - UNIT_SIZE
         newy = player.ycor()
-        self.shape("green_elf_left24x24.gif")
+        self.shape("player_left32x32.gif")
         if (newx, newy) not in walls:
             self.goto(newx, newy)
 
     def rt(self):
         newx = player.xcor() + UNIT_SIZE
         newy = player.ycor()
-        self.shape("green_elf_right24x24.gif")
+        self.shape("player_right32x32.gif")
         if (newx, newy) not in walls:
             self.goto(newx, newy)
 
@@ -92,7 +94,7 @@ class Player(turtle.Turtle):
 class Treasure(turtle.Turtle):
     def __init__(self, x, y):
         super(Treasure, self).__init__()
-        self.shape("blue_jewell24x24.gif")
+        self.shape("treasure_chest32x32.gif")
         self.color("gold")
         self.penup()
         self.speed(0)
@@ -190,7 +192,7 @@ def setup_maze(level, walls):
 
             if character == "X":
                 pen.goto(screen_x, screen_y)
-                pen.shape("mossy_wall24x24.gif")
+                pen.shape("cave_wall32x32.gif")
                 pen.stamp()
                 walls.append((screen_x, screen_y))
 
