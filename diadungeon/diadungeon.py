@@ -17,7 +17,8 @@ if DEBUG:
     print "SPLIT: {}".format(SPLIT)
 
 window = turtle.Screen()
-window.bgcolor("dark green")
+window.colormode(255)
+window.bgcolor(10, 71, 4)
 window.title("Dia Dungeon Mazer")
 window.setup(WINDOW_WIDTH, WINDOW_HEIGHT)
 window.tracer(0)
