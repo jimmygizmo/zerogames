@@ -24,10 +24,15 @@ window.tracer(0)
 
 sprites = [
             "cave_wall32x32.gif",
-            "player_right32x32.gif",
+            "grey_stone32x32.gif",
+            "stairs_dn_left32x32.gif",
+            "stairs_dn_right32x32.gif",
             "player_left32x32.gif",
-            "cyclops_right32x32.gif",
+            "player_right32x32.gif",
             "cyclops_left32x32.gif",
+            "cyclops_right32x32.gif",
+            "dragon_left32x32.gif",
+            "dragon_right32x32.gif",
             "treasure_chest32x32.gif"
             ]
 
@@ -92,11 +97,14 @@ class Player(turtle.Turtle):
 
 
 class Monster(turtle.Turtle):
-    def __init__(self, x, y):
+    def __init__(self, x, y, monster_type,
+        monster_shape_left, monster_shape_right):
         # turtle.Turtle.__init__(self)  # Equivalent to following line
         super(Monster, self).__init__()
-        self.shape("cyclops_right32x32.gif")
-        self.type = "cyclops"
+        self.shape_left = monster_shape_left
+        self.shape_right = monster_shape_right
+        self.shape(self.shape_right)
+        self.type = monster_type
         self.color("red")
         self.penup()
         self.speed(0)
@@ -114,11 +122,11 @@ class Monster(turtle.Turtle):
         elif self.direction == "lt":
             deltax = 0 - UNIT_SIZE
             deltay = 0
-            self.shape("cyclops_left32x32.gif")
+            self.shape(self.shape_left)
         elif self.direction == "rt":
             deltax = UNIT_SIZE
             deltay = 0
-            self.shape("cyclops_right32x32.gif")
+            self.shape(self.shape_right)
 
         newx = self.xcor() + deltax
         newy = self.ycor() + deltay
@@ -160,7 +168,7 @@ level_1_25 = [
     "X  XXXXX XXX XXXX XXXXX X",
     "X XXX    XXX XXXX XT  X X",
     "X X   XXXX      X X     X",
-    "X       MXXX XX X X  MX X",
+    "X       CXXX XX X X  CX X",
     "XXXXXXXXXXXX XX X XXXXX X",
     "X    XX    X X  X X   X X",
     "X X      X   X  X     X X",
@@ -169,16 +177,16 @@ level_1_25 = [
     "XXXXXXXXXX X   XX       X",
     "X          X   XXXXXXXX X",
     "X XXXXXX XXXX XXXX X    X",
-    "X XXXX     XX X    X XX X",
+    "X XXXX     XX XD   X XX X",
     "X   XX     XX XXXX   XX X",
-    "X  MXX T   XX XM    XXXXX",
+    "X  CXX T   XX XM    XXXXX",
     "XXX XX     XX XXXXX     X",
     "X   XXXXXXXXX XX XXXX X X",
     "X XXX             XXX XXX",
-    "X XXXX XX X X X XXXX    X",
+    "X XXXX XX X X X XXXXD   X",
     "X    X XX       XX   XX X",
     "XXXX X  X X X X XX XXX  X",
-    "XM   XX X    M  XX   X  X",
+    "XM   XX X    C  XX   X =X",
     "XXXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
@@ -206,7 +214,7 @@ level_1_24 = [
     "X XXX XX X X X XXXX    X",
     "X   X XX       XX   XX X",
     "XXX X  X X X X XX XXX  X",
-    "X   XX X       XX   X  X",
+    "X   XX X       XX   X =X",
     "XXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
@@ -234,6 +242,11 @@ def setup_maze(level, walls):
             screen_x = (0 - SPLIT) + (x * UNIT_SIZE)
             screen_y = SPLIT - (y * UNIT_SIZE)
 
+            if character == "=":
+                pen.goto(screen_x, screen_y)
+                pen.shape("stairs_dn_right32x32.gif")
+                pen.stamp()
+
             if character == "X":
                 pen.goto(screen_x, screen_y)
                 pen.shape("cave_wall32x32.gif")
@@ -246,8 +259,13 @@ def setup_maze(level, walls):
             if character == "T":
                 treasures.append(Treasure(screen_x, screen_y))
 
-            if character == "M":
-                monsters.append(Monster(screen_x, screen_y))
+            if character == "C":
+                monsters.append(Monster(screen_x, screen_y, "cyclops",
+                "cyclops_left32x32.gif", "cyclops_right32x32.gif"))
+
+            if character == "D":
+                monsters.append(Monster(screen_x, screen_y, "dragon",
+                "dragon_left32x32.gif", "dragon_right32x32.gif"))
 
 
 pen = Pen()
