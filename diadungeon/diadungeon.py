@@ -97,14 +97,15 @@ class Player(turtle.Turtle):
 
 
 class Monster(turtle.Turtle):
-    def __init__(self, x, y, monster_type,
-        monster_shape_left, monster_shape_right):
+    def __init__(self, x, y, mon_type,
+        mon_shape_left, mon_shape_right, mon_max_pause):
         # turtle.Turtle.__init__(self)  # Equivalent to following line
         super(Monster, self).__init__()
-        self.shape_left = monster_shape_left
-        self.shape_right = monster_shape_right
+        self.type = mon_type
+        self.shape_left = mon_shape_left
+        self.shape_right = mon_shape_right
+        self.max_pause = mon_max_pause
         self.shape(self.shape_right)
-        self.type = monster_type
         self.color("red")
         self.penup()
         self.speed(0)
@@ -136,7 +137,7 @@ class Monster(turtle.Turtle):
         else:
             self.direction = random.choice(["up", "dn", "lt", "rt"])
 
-        turtle.ontimer(self.move, t=random.randint(100, 300))
+        turtle.ontimer(self.move, t=random.randint(100, self.max_pause))
 
     def dispose(self):
         self.goto(2000, 2000)
@@ -221,7 +222,7 @@ level_1_24 = [
 levels.append(level_1_25)
 
 
-def setup_maze(level, walls):
+def validate_maze(level):
     rows = len(level)
     if not rows == UNITS:
         print "FATAL ERROR: Maze/level data row count does not match global " \
@@ -237,35 +238,55 @@ def setup_maze(level, walls):
                 "for UNITS. Row contains {} units but it should contain " \
                 "exactly {} units.".format(y, row_units, UNITS)
             exit(1)
+
+
+def setup_maze(level, walls):
+    rows = len(level)
+    for y in range(rows):
+        row = level[y]
+        row_units = len(row)
         for x in range(row_units):
-            character = level[y][x]
+            unit = level[y][x]
             screen_x = (0 - SPLIT) + (x * UNIT_SIZE)
             screen_y = SPLIT - (y * UNIT_SIZE)
 
-            if character == "=":
+            if unit == "=":
                 pen.goto(screen_x, screen_y)
                 pen.shape("stairs_dn_right32x32.gif")
                 pen.stamp()
 
-            if character == "X":
+            if unit == "X":
                 pen.goto(screen_x, screen_y)
                 pen.shape("cave_wall32x32.gif")
                 pen.stamp()
                 walls.append((screen_x, screen_y))
 
-            if character == "P":
+
+def setup_beings(level):
+    rows = len(level)
+    for y in range(rows):
+        row = level[y]
+        row_units = len(row)
+        for x in range(row_units):
+            unit = level[y][x]
+            screen_x = (0 - SPLIT) + (x * UNIT_SIZE)
+            screen_y = SPLIT - (y * UNIT_SIZE)
+
+            if unit == "P":
                 player.goto(screen_x, screen_y)
 
-            if character == "T":
+            if unit == "T":
                 treasures.append(Treasure(screen_x, screen_y))
 
-            if character == "C":
+            if unit == "C":
                 monsters.append(Monster(screen_x, screen_y, "cyclops",
-                "cyclops_left32x32.gif", "cyclops_right32x32.gif"))
+                "cyclops_left32x32.gif", "cyclops_right32x32.gif",
+                450))
 
-            if character == "D":
+            if unit == "D":
                 monsters.append(Monster(screen_x, screen_y, "dragon",
-                "dragon_left32x32.gif", "dragon_right32x32.gif"))
+                "dragon_left32x32.gif", "dragon_right32x32.gif",
+                150))
 
 
 pen = Pen()
@@ -275,7 +296,9 @@ walls = []
 
 monsters = []
 
+validate_maze(levels[1])
 setup_maze(levels[1], walls)
+setup_beings(levels[1])
 
 turtle.listen()
 turtle.onkey(player.lt, "Left")
