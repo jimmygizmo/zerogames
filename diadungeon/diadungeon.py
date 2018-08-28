@@ -91,6 +91,50 @@ class Player(turtle.Turtle):
             return False
 
 
+class Monster(turtle.Turtle):
+    def __init__(self, x, y):
+        # turtle.Turtle.__init__(self)  # Equivalent to following line
+        super(Monster, self).__init__()
+        self.shape("cyclops_right32x32.gif")
+        self.type = "cyclops"
+        self.color("red")
+        self.penup()
+        self.speed(0)
+        self.booty = 50
+        self.goto(x, y)
+        self.direction = random.choice(["up", "dn", "lt", "rt"])
+
+    def move(self):
+        if self.direction == "up":
+            deltax = 0
+            deltay = UNIT_SIZE
+        elif self.direction == "dn":
+            deltax = 0
+            deltay = 0 - UNIT_SIZE
+        elif self.direction == "lt":
+            deltax = 0 - UNIT_SIZE
+            deltay = 0
+            self.shape("cyclops_left32x32.gif")
+        elif self.direction == "rt":
+            deltax = UNIT_SIZE
+            deltay = 0
+            self.shape("cyclops_right32x32.gif")
+
+        newx = self.xcor() + deltax
+        newy = self.ycor() + deltay
+
+        if (newx, newy) not in walls:
+            self.goto(newx, newy)
+        else:
+            self.direction = random.choice(["up", "dn", "lt", "rt"])
+
+        turtle.ontimer(self.move, t=random.randint(100, 300))
+
+    def dispose(self):
+        self.goto(2000, 2000)
+        self.hideturtle()
+
+
 class Treasure(turtle.Turtle):
     def __init__(self, x, y):
         super(Treasure, self).__init__()
@@ -101,7 +145,7 @@ class Treasure(turtle.Turtle):
         self.value = 100
         self.goto(x, y)
 
-    def destroy(self):
+    def dispose(self):
         self.goto(2000, 2000)
         self.hideturtle()
 
@@ -116,7 +160,7 @@ level_1_25 = [
     "X  XXXXX XXX XXXX XXXXX X",
     "X XXX    XXX XXXX XT  X X",
     "X X   XXXX      X X     X",
-    "X        XXX XX X X   X X",
+    "X       MXXX XX X X  MX X",
     "XXXXXXXXXXXX XX X XXXXX X",
     "X    XX    X X  X X   X X",
     "X X      X   X  X     X X",
@@ -127,14 +171,14 @@ level_1_25 = [
     "X XXXXXX XXXX XXXX X    X",
     "X XXXX     XX X    X XX X",
     "X   XX     XX XXXX   XX X",
-    "X   XX T   XX X     XXXXX",
+    "X  MXX T   XX XM    XXXXX",
     "XXX XX     XX XXXXX     X",
     "X   XXXXXXXXX XX XXXX X X",
     "X XXX             XXX XXX",
     "X XXXX XX X X X XXXX    X",
     "X    X XX       XX   XX X",
     "XXXX X  X X X X XX XXX  X",
-    "X    XX X       XX   X  X",
+    "XM   XX X    M  XX   X  X",
     "XXXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
@@ -202,11 +246,16 @@ def setup_maze(level, walls):
             if character == "T":
                 treasures.append(Treasure(screen_x, screen_y))
 
+            if character == "M":
+                monsters.append(Monster(screen_x, screen_y))
+
 
 pen = Pen()
 player = Player()
 
 walls = []
+
+monsters = []
 
 setup_maze(levels[1], walls)
 
@@ -223,15 +272,31 @@ turtle.onkey(player.dn, "s")
 
 window.tracer(0)
 
-while True:
+for monster in monsters:
+    turtle.ontimer(monster.move, t=250)
+
+loop = True
+while (loop is True):
     for treasure in treasures:
         if player.collision(treasure):
             player.score += treasure.value
             print("Player gold pieces: {}".format(player.score))
-            treasure.destroy()
+            treasure.dispose()
             treasures.remove(treasure)
 
+    for monster in monsters:
+        if player.collision(monster):
+            print "You died a horrible death " \
+                "at the hands of a {}!".format(monster.type)
+            loop = False
+
     window.update()
+
+
+# print "HIT SPACE TO EXIT."
+# TODO: Need something like turtle.waitkey() which actually does not exist
+# turtle.waitkey("Space")
+exit(0)
 
 ##
 #
