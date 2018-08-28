@@ -1,13 +1,33 @@
+#! /usr/bin/env python
+# This program is intended to use Python 2 and modules installed under Python 2
+
+import signal
+import sys
 import turtle
 import math
 import random
 
-DEBUG = False
+DEBUG = True
+
+def signal_handler(signal, frame):
+    if DEBUG:
+        print "SIGNAL: {}  FRAME: {}".format(signal, frame)
+    print "EXITING for keyboard interrupt (CTRL-C)."
+    try:
+        if window is not None:
+            window.bye()
+    except:
+        pass
+    sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
 
 # Playing area of grid will be 600 x 600 with 50 padding all around, hence
 # the window size of 700 x 700
 WINDOW_WIDTH = 840
 WINDOW_HEIGHT = 840
+WINDOW_STARTX = 0
+WINDOW_STARTY = 0
+
 UNIT_SIZE = 32  # Individual grid units are 24 x 24 pixels each
 UNITS = 25  # Number of grid units in any row or column of the square grid
 HALF_GRID_UNITS_WHOLE = int(UNITS / 2)  # int() drops remainder
@@ -20,7 +40,8 @@ window = turtle.Screen()
 window.colormode(255)
 window.bgcolor(10, 71, 4)
 window.title("Dia Dungeon Mazer")
-window.setup(WINDOW_WIDTH, WINDOW_HEIGHT)
+window.setup(width=WINDOW_WIDTH, height=WINDOW_HEIGHT,
+             startx=WINDOW_STARTX, starty=WINDOW_STARTY)
 window.tracer(0)
 
 sprites = [
@@ -343,7 +364,8 @@ while (loop is True):
 # print "HIT SPACE TO EXIT."
 # TODO: Need something like turtle.waitkey() which actually does not exist
 # turtle.waitkey("Space")
-exit(0)
+window.bye()
+sys.exit(0)
 
 ##
 #
