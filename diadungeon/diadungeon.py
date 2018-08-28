@@ -180,14 +180,14 @@ level_1_25 = [
     "X XXXXXX XXXX XXXX X    X",
     "X XXXX     XX XD   X XX X",
     "X   XX     XX XXXX   XX X",
-    "X  CXX T   XX XM    XXXXX",
+    "X  CXX T   XX XC    XXXXX",
     "XXX XX     XX XXXXX     X",
     "X   XXXXXXXXX XX XXXX X X",
     "X XXX             XXX XXX",
     "X XXXX XX X X X XXXXD   X",
     "X    X XX       XX   XX X",
     "XXXX X  X X X X XX XXX  X",
-    "XM   XX X    C  XX   X =X",
+    "XC   XX X    C  XX   X =X",
     "XXXXXXXXXXXXXXXXXXXXXXXXX"
 ]
 
@@ -238,6 +238,11 @@ def validate_maze(level):
                 "for UNITS. Row contains {} units but it should contain " \
                 "exactly {} units.".format(y, row_units, UNITS)
             exit(1)
+        for x in range(row_units):
+            unit = level[y][x]
+            if not unit in "X =TCDP":
+                print "WARNING: Unrecognized unit type in maze/level data " \
+                    "at (0 indexed) position {} and row {}".format(x, y)
 
 
 def setup_maze(level, walls):
@@ -272,9 +277,6 @@ def setup_beings(level):
             screen_x = (0 - SPLIT) + (x * UNIT_SIZE)
             screen_y = SPLIT - (y * UNIT_SIZE)
 
-            if unit == "P":
-                player.goto(screen_x, screen_y)
-
             if unit == "T":
                 treasures.append(Treasure(screen_x, screen_y))
 
@@ -287,6 +289,9 @@ def setup_beings(level):
                 monsters.append(Monster(screen_x, screen_y, "dragon",
                 "dragon_left32x32.gif", "dragon_right32x32.gif",
                 150))
+
+            if unit == "P":
+                player.goto(screen_x, screen_y)
 
 
 pen = Pen()
