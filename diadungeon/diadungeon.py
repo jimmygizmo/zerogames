@@ -45,10 +45,15 @@ window.setup(width=WINDOW_WIDTH, height=WINDOW_HEIGHT,
              startx=WINDOW_STARTX, starty=WINDOW_STARTY)
 window.tracer(0)
 
-# Access Tkinter canvas object to bring Turtle window to the foreground
+# Access Tkinter canvas object to bring Turtle window to the foreground.
+# TODO: This brings window to front BUT DOES NOT give focus so the keys
+# have no effect until you click on the window. Only half the problem solved.
+# To to also give windoe focus.
 canvas = window.getcanvas().winfo_toplevel()
 canvas.call("wm", "attributes", ".", "-topmost", "1")
 canvas.call("wm", "attributes", ".", "-topmost", "0")
+# For focus, trying:
+canvas.call("force_focus")  # NOPE: _tkinter.TclError: invalid command name "force_focus"
 
 sprites = [
             "cave_wall32x32.gif",
