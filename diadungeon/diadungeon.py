@@ -52,8 +52,6 @@ window.tracer(0)
 canvas = window.getcanvas().winfo_toplevel()
 canvas.call("wm", "attributes", ".", "-topmost", "1")
 canvas.call("wm", "attributes", ".", "-topmost", "0")
-# For focus, trying:
-canvas.call("force_focus")  # NOPE: _tkinter.TclError: invalid command name "force_focus"
 
 sprites = [
             "cave_wall32x32.gif",
