@@ -10,16 +10,37 @@ import time
 
 DEBUG = True
 
+
+# TODO; This signal handler does allow CTRL-C to exit the game when it is
+# pressed in the turtle/tkinter window (when it is is focus) whis is part of
+# the improvements to 'quitting' we were looking for. BUT there is still an
+# ugly tkinter error thrown to the console when quitting this way. A somewhat
+# separate problem is that the same or a similar ugly tkinter error is thrown
+# to the console when the MacOS red window close button is clicked. The problem
+# comse from tkinter attempting to dispose of objects that no longer exist.
+# It seems the final solution will be to work directly with tkinter in some
+# way. We need to be able to simply close the window and have the game quit
+# cleanly, as well as hit CTRL-C. NOTE: When the game is running and the game
+# window is in focus, the Macos Menu Bar shows a very basic set of menu items
+# and the File -> Quit menu item does not do anthing. So actually, there is
+# currently no clean way to exit the game excpet for getting killed. Thus
+# we need to look at why getting killed allows a clean exit and the other
+# ways do not. The first thing to consider is what is happening and what
+# objects are in play in the different parts of code in play in these
+# different scenarios.
 def signal_handler(signal, frame):
     if DEBUG:
         print "SIGNAL: {}  FRAME: {}".format(signal, frame)
     print "EXITING for keyboard interrupt (CTRL-C)."
-    try:
-        if window is not None:
-            window.bye()
-    except:
-        pass
-    sys.exit(0)
+    # try:
+    #     if window is not None:
+    #         window.bye()
+    # except Exception:
+    #     pass
+    # sys.exit(0)
+
+
+# See comments above as we are still looking for a total clean-exit solution.
 signal.signal(signal.SIGINT, signal_handler)
 
 # Playing area of grid will be 600 x 600 with 50 padding all around, hence
@@ -92,27 +113,27 @@ class Player(turtle.Turtle):
         self.score = 0
 
     def up(self):
-        newx = player.xcor()
-        newy = player.ycor() + UNIT_SIZE
+        newx = self.xcor()
+        newy = self.ycor() + UNIT_SIZE
         if (newx, newy) not in walls:
             self.goto(newx, newy)
 
     def dn(self):
-        newx = player.xcor()
-        newy = player.ycor() - UNIT_SIZE
+        newx = self.xcor()
+        newy = self.ycor() - UNIT_SIZE
         if (newx, newy) not in walls:
             self.goto(newx, newy)
 
     def lt(self):
-        newx = player.xcor() - UNIT_SIZE
-        newy = player.ycor()
+        newx = self.xcor() - UNIT_SIZE
+        newy = self.ycor()
         self.shape("player_left32x32.gif")
         if (newx, newy) not in walls:
             self.goto(newx, newy)
 
     def rt(self):
-        newx = player.xcor() + UNIT_SIZE
-        newy = player.ycor()
+        newx = self.xcor() + UNIT_SIZE
+        newy = self.ycor()
         self.shape("player_right32x32.gif")
         if (newx, newy) not in walls:
             self.goto(newx, newy)
