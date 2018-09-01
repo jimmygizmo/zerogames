@@ -150,7 +150,7 @@ class Player(turtle.Turtle):
 
 class Monster(turtle.Turtle):
     def __init__(self, x, y, mon_type,
-        mon_shape_left, mon_shape_right, mon_max_pause):
+                 mon_shape_left, mon_shape_right, mon_max_pause):
         # turtle.Turtle.__init__(self)  # Equivalent to following line
         super(Monster, self).__init__()
         self.type = mon_type
@@ -180,6 +180,27 @@ class Monster(turtle.Turtle):
             deltax = UNIT_SIZE
             deltay = 0
             self.shape(self.shape_right)
+        else:  # For completeness of logic here even though it looks like
+                # a direction will always be set and this else block may
+                # never be hit. Maybe in the future monsters can stand
+                # still, meaning they have no direction and in that case
+                # we might want this else block. Even then we might not
+                # explicitly need it for the code to work but it is more
+                # correct to have it in place.
+            deltax = 0
+            deltay = 0
+
+        if self.nearby(player):
+            if player.xcor() < self.xcor():
+                self.direction = "lt"
+            elif player.xcor() > self.xcor():
+                self.direction = "rt"
+            elif player.ycor() < self.ycor():
+                self.direction = "dn"
+            elif player.ycor() > self.ycor():
+                self.direction = "up"
+            # NOTE: The above is biased such that horizantal following always
+            # occurs before vertical following
 
         newx = self.xcor() + deltax
         newy = self.ycor() + deltay
@@ -190,6 +211,16 @@ class Monster(turtle.Turtle):
             self.direction = random.choice(["up", "dn", "lt", "rt"])
 
         turtle.ontimer(self.move, t=random.randint(100, self.max_pause))
+
+    def nearby(self, other):
+        a = self.xcor() - other.xcor()
+        b = self.ycor() - other.ycor()
+        distance = math.sqrt((a ** 2) + (b ** 2))
+
+        if distance < 75:
+            return True
+        else:
+            return False
 
     def dispose(self):
         self.goto(2000, 2000)
@@ -334,13 +365,15 @@ def setup_beings(level):
 
             if unit == "C":
                 monsters.append(Monster(screen_x, screen_y, "cyclops",
-                "cyclops_left32x32.gif", "cyclops_right32x32.gif",
-                450))
+                                        "cyclops_left32x32.gif",
+                                        "cyclops_right32x32.gif",
+                                        450))
 
             if unit == "D":
                 monsters.append(Monster(screen_x, screen_y, "dragon",
-                "dragon_left32x32.gif", "dragon_right32x32.gif",
-                150))
+                                        "dragon_left32x32.gif",
+                                        "dragon_right32x32.gif",
+                                        150))
 
             if unit == "P":
                 player.goto(screen_x, screen_y)
