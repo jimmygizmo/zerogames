@@ -1,0 +1,39 @@
+
+# Coding Exercise: Card Shuffler
+# -------------------------------------------
+
+# Problem Description:
+
+# Say you have a deck of cards, and two piles they can be put in.
+# Initially all cards are in pile A, and pile B is empty.
+# You are instructed to shuffle the deck as follows:
+
+#     1. Pull a card from the top of pile A, and put on pile B
+#     2. Pull a card from the top of pile A, and put it in the bottom of pile A
+#     3. Repeat steps 2 & 3 until pile A is empty.
+
+# This counts as one round. Create a function that takes
+
+# Arguments:
+# 	deck:  			(list)  The deck of cards
+# 	rounds_to_shuffle: 	(int) The number of rounds to shuffle the deck 
+
+# And Returns: 
+# 	The shuffled deck.
+
+# Tips:
+
+# Implementing this brute force is pretty straight forward. Optimal solutions computing rounds util the deck returns to its original order, are prevalent online:  (https://math.stackexchange.com/questions/119214/card-shuffling-spoj).  Try combining these two approaches.
+
+# Requirements:
+
+# 1. Please write in Python
+# 2. Only use python standard libraries.
+
+# Grading (In order of importance):
+
+# 1. Quality of your test cases.
+# 2. Documentation and reasoning behind design decisions.
+# 3. Correctness of solution.
+# 4. Code style and programming practices.
+# 5. Algorithmic efficiency and resource management.
