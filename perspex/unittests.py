@@ -5,7 +5,7 @@
 import xshuffle
 import json  # For comparison of hypothetical complex (nested dict) cards
 
-VERBOSE = True
+VERBOSE = False
 # Set 'VERBOSE' to True to see verbose output from the 
 # xshuffle module as it operates.
 # This may also enable some additional output from this test script.
@@ -20,7 +20,64 @@ if VERBOSE:
 # both with and without optimization.
 #xshuffle.set_optimized_shuffling(True)
 
+
 #################################### TESTS #####################################
+
+
+# TEST CASE: (DEMO) five_card_deck_asciiart_twenty
+# Put the xshuffle module in verbose mode to display all activity and use a
+# graphical (ascii-art) deck of five cards which makes it easy to see what is
+# happening to the cards upon each round of shuffling. This makes it easy to
+# see when the deck is shuffled back to its original state and on what
+# intervals this occurs, depending on the number of cards (even or odd etc.)
+def demo_five_card_deck_asciiart_twenty():
+    print('RUNNING DEMO: demo_five_card_deck_asciiart_twenty')
+    deck_of_five_ascii_art_cards = [
+        '####',
+        '-###',
+        '--##',
+        '---#',
+        '----'
+    ]
+
+    # Demo tests like this set the xshuffle module verbosity on temporarily
+    xshuffle.set_verbose(True)
+    shuffled_deck = xshuffle.shuffle(deck_of_five_ascii_art_cards, 20)
+    if not VERBOSE:  # Restore the VERBOSITY setting of the test file
+        xshuffle.set_verbose(False)
+
+
+# ---------------------------------------------------------------------------- #
+
+
+# TEST CASE: (DEMO) eight_card_deck_asciiart_thirtytwo
+# Put the xshuffle module in verbose mode to display all activity and use a
+# graphical (ascii-art) deck of eight cards which makes it easy to see what is
+# happening to the cards upon each round of shuffling. This makes it easy to
+# see when the deck is shuffled back to its original state and on what
+# intervals this occurs, depending on the number of cards (even or odd etc.)
+def demo_eight_card_deck_asciiart_thirtytwo():
+    print('RUNNING DEMO: demo_eight_card_deck_asciiart_thirtytwo')
+    deck_of_eight_ascii_art_cards = [
+        '#######',
+        '-######',
+        '--#####',
+        '---####',
+        '----###',
+        '-----##',
+        '------#',
+        '-------'
+    ]
+
+    # Demo tests like this set the xshuffle module verbosity on temporarily
+    xshuffle.set_verbose(True)
+    shuffled_deck = xshuffle.shuffle(deck_of_eight_ascii_art_cards, 32)
+    if not VERBOSE:  # Restore the VERBOSITY setting of the test file
+        xshuffle.set_verbose(False)
+
+
+# ---------------------------------------------------------------------------- #
+
 
 # TEST CASE: fifty_two_card_deck_numerical_once
 # Does a typical deck of cards, shuffled one round, get shuffled to the known
@@ -36,6 +93,7 @@ if VERBOSE:
 # module, in shuffling a standard playing card deck.
 # Tangentially, this test also shows that numerical 'cards' are supported.
 def test_fifty_two_card_deck_numerical_once():
+    print('RUNNING TEST: test_fifty_two_card_deck_numerical_once')
     fifty_two_card_deck_numerical = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -56,7 +114,9 @@ def test_fifty_two_card_deck_numerical_once():
         f"fifty-two card deck numerical test failed " \
             f"(rounds used: 1)"  # This test only supports 1 round
 
+
 # ---------------------------------------------------------------------------- #
+
 
 # TEST CASE: test_one_card_deck_complex
 # (Complex refers to the card being an object of any kind.)
@@ -66,45 +126,37 @@ def test_fifty_two_card_deck_numerical_once():
 # a dictionary of card attributes as a graphical card game might use.
 # These tests are repeated for a few different rounds_to_shuffle values (1, 2, 5)
 def test_one_card_deck_complex():
-    complex_card = 1
-    # complex_card = dict(
-    #     card_title = 'Ace of Spades',
-    #     card_image_files = dict(
-    #         large = 'ace_of_spades_400px.png',
-    #         small = 'ace_of_spades_150px.png'
-    #         )
-    #     )
+    print('RUNNING TEST: test_one_card_deck_complex')
+    complex_card = dict(
+        card_title = 'Ace of Spades',
+        card_image_files = dict(
+            large = 'ace_of_spades_400px.png',
+            small = 'ace_of_spades_150px.png'
+            )
+        )
     comparable_complex_card = json.dumps(complex_card, sort_keys=True)
-    print(comparable_complex_card)
     one_card_deck = [ complex_card ]
 
     round_vals_to_try = [1, 2, 5]
     for rounds_to_shuffle in round_vals_to_try:
-        display_rounds = rounds_to_shuffle  # Possible Python bug?
-        # The iteration variable gets reset for an UNKNOWN reason.
-        print(f"Calling for {display_rounds} rounds")  # DEBUG
-        print(f"DECK BEFORE CALLING:")  # DEBUG
-        print(one_card_deck)  # DEBUG
         shuffled_deck = xshuffle.shuffle(one_card_deck, rounds_to_shuffle)
-        print(f"\nWHAT WAS RETURNED: ")
-        print(shuffled_deck)  # DEBUG
-        #xshuffle.show_stack(shuffled_deck, f"\n--DEBUG--")  # DEBUG
 
         assert len(shuffled_deck) == 1, \
             f"one card deck shuffle returned a deck with {len(shuffled_deck)} " \
-                f"cards in it. (rounds used: {display_rounds})"
+                f"cards in it. (rounds used: {rounds_to_shuffle})"
 
         card_in_shuffled_deck = shuffled_deck.pop()
         comparable_card = json.dumps(card_in_shuffled_deck, sort_keys=True)
-        print(comparable_card)  # DEBUG
 
         assert comparable_card == comparable_complex_card, \
             f"one card deck shuffle returned a complex card which had " \
-                f"some difference in it. (rounds used: {display_rounds})"
+                f"some difference in it. (rounds used: {rounds_to_shuffle})"
 
 
 ################################## TEST SUITE ##################################
 
+demo_five_card_deck_asciiart_twenty()
+#demo_eight_card_deck_asciiart_sixteen()
 #test_fifty_two_card_deck_numerical_once()
-test_one_card_deck_complex()
+#test_one_card_deck_complex()
 
