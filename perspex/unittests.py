@@ -31,7 +31,7 @@ if VERBOSE:
 # see when the deck is shuffled back to its original state and on what
 # intervals this occurs, depending on the number of cards (even or odd etc.)
 def demo_five_card_deck_asciiart_twenty():
-    print('RUNNING DEMO: demo_five_card_deck_asciiart_twenty')
+    print("\nRUNNING DEMO: demo_five_card_deck_asciiart_twenty")
     deck_of_five_ascii_art_cards = [
         '####',
         '-###',
@@ -57,7 +57,7 @@ def demo_five_card_deck_asciiart_twenty():
 # see when the deck is shuffled back to its original state and on what
 # intervals this occurs, depending on the number of cards (even or odd etc.)
 def demo_eight_card_deck_asciiart_thirtytwo():
-    print('RUNNING DEMO: demo_eight_card_deck_asciiart_thirtytwo')
+    print("\nRUNNING DEMO: demo_eight_card_deck_asciiart_thirtytwo")
     deck_of_eight_ascii_art_cards = [
         '#######',
         '-######',
@@ -93,7 +93,7 @@ def demo_eight_card_deck_asciiart_thirtytwo():
 # module, in shuffling a standard playing card deck.
 # Tangentially, this test also shows that numerical 'cards' are supported.
 def test_fifty_two_card_deck_numerical_once():
-    print('RUNNING TEST: test_fifty_two_card_deck_numerical_once')
+    print("\nRUNNING TEST: test_fifty_two_card_deck_numerical_once")
     fifty_two_card_deck_numerical = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
@@ -103,16 +103,16 @@ def test_fifty_two_card_deck_numerical_once():
     # This test only supports 1 round of shuffling.
     shuffled_deck = xshuffle.shuffle(fifty_two_card_deck_numerical, 1)
 
-    known_correct_result_string = "40-8-24-48-32-16-52-44-36-28-" \
-        "20-12-4-50-46-42-38-34-30-26-" \
-        "22-18-14-10-6-2-51-49-47-45-" \
-        "43-41-39-37-35-33-31-29-27-25-" \
-        "23-21-19-17-15-13-11-9-7-5-3-1"
+    known_correct_result_string = '40-8-24-48-32-16-52-44-36-28-' \
+        '20-12-4-50-46-42-38-34-30-26-' \
+        '22-18-14-10-6-2-51-49-47-45-' \
+        '43-41-39-37-35-33-31-29-27-25-' \
+        '23-21-19-17-15-13-11-9-7-5-3-1'
 
     assert ('-'.join(str(item) for item in shuffled_deck)
         == known_correct_result_string), \
-        f"fifty-two card deck numerical test failed " \
-            f"(rounds used: 1)"  # This test only supports 1 round
+        'fifty-two card deck numerical test failed ' \
+            '(rounds used: 1)'  # This test only supports 1 round
 
 
 # ---------------------------------------------------------------------------- #
@@ -126,7 +126,7 @@ def test_fifty_two_card_deck_numerical_once():
 # a dictionary of card attributes as a graphical card game might use.
 # These tests are repeated for a few different rounds_to_shuffle values (1, 2, 5)
 def test_one_card_deck_complex():
-    print('RUNNING TEST: test_one_card_deck_complex')
+    print("\nRUNNING TEST: test_one_card_deck_complex")
     complex_card = dict(
         card_title = 'Ace of Spades',
         card_image_files = dict(
@@ -156,7 +156,7 @@ def test_one_card_deck_complex():
 ################################## TEST SUITE ##################################
 
 demo_five_card_deck_asciiart_twenty()
-#demo_eight_card_deck_asciiart_sixteen()
-#test_fifty_two_card_deck_numerical_once()
-#test_one_card_deck_complex()
+demo_eight_card_deck_asciiart_thirtytwo()
+test_fifty_two_card_deck_numerical_once()
+test_one_card_deck_complex()
 
