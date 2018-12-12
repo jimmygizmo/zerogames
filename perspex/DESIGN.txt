@@ -1,0 +1,33 @@
+
+# DESIGN CONSIDERATIONS
+
+# The python list is being used to model a deck of cards,
+# such that a 'card' or more generally, an item in the list,
+# can be any python object. The only convention we need to
+# establish is which end of the list (reasonably considered
+# an array in this context as well) will be labeled as the
+# top of the deck.
+
+# A Top of deck = start of list/array convetion will be used:
+
+# - Top of deck, first card in deck = first item in list
+#   (Top of deck is the left side of the list.)
+#   Operations to 'REMOVE a card from the TOP of the deck'
+#   will be equivalent to: deck_list.pop(0)
+#   Operations to 'ADD a card to the TOP of the deck'
+#   will be equivalent to: deck_list.insert(0, card_to_add)
+
+# - Bottom of deck, last card in deck = last item in list
+#   (Bottom of deck is the right side of the list.)
+#   Operations to 'REMOVE a card from the BOTTOM of the deck'
+#   will be equivalent to: deck_list.pop(-1) or deck_list.pop()
+#   Operations to 'ADD a card to the BOTTOM of the deck'
+#   will be equivalent to: deck_list.append(card_to_add)
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - #
+
+# 8 Ascii symbols in a sequence
+#deck_of_symbol_cards = ['~', '@', '#', '$', '%', '&', '*', '?']
+
+##
+#
