@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
 import xshuffle
-import json  # For comparison of hypothetical complex (nested dict) cards
 
 VERBOSE = True
 # Set 'VERBOSE' to True to see verbose output from the 
