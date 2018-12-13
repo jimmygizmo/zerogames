@@ -249,6 +249,8 @@ def perform_shuffle_unit(start_stack, end_stack):
 # as would be acheived by simply shuffling for x rounds.
 # This is the optimization.
 #
+# ( NOTE: Testing has shown the following is not quite correct. See comments
+#   near this calculation below in the function.)
 # The other important consideration is how restoration_interval is determined.
 # Through experimentation/observation or through mathematical reasoning,
 # one discovers that there are two rules:
@@ -280,7 +282,13 @@ def optimze_rounds(number_of_cards, rounds_to_shuffle):
             
     Returns: An optimized number of rounds to shuffle to acheive the exact
         same results (when possible.)"""
-        
+    
+    # TODO: FIX: This is where the problem is with the current optimization.
+    # These calculations of the restoration_interval work for many values
+    # of number_of_cards, BUT NOT ALL, For example, the restoration_interval
+    # for a deck of 7 cards is calculated here to be 7, but in fact it
+    # is observed to be 5. It seems this part needs to be a bit more complex
+    # than it currently is.
     if number_of_cards % 2 == 0:
         # Even number of cards
         restoration_interval = int(number_of_cards / 2)

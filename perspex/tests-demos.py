@@ -19,14 +19,14 @@ if VERBOSE:
 # This function is called at the very end of this file.
 # See code comments near the function for each demo/test for details.
 def run_demos_and_tests():
-    #test_six_card_deck_twentyfive_optim_notoptim()  # PASS
+    #test_six_card_deck_twentyfive_optim_notoptim()  # PASS (ALGORITHM GETS LUCKY)
     #test_seven_card_deck_twentyfive_optim_notoptim()  # TODO: FIX: TEST/ALGORITHM FAILS
-    test_eight_card_deck_fortythree_optim_notoptim()  # PASS
+    #test_eight_card_deck_fortythree_optim_notoptim()  # PASS
+    #test_fifty_two_card_deck_numerical_once()  # PASS
     #demo_three_card_deck_asciiart_twenty()  # (demo, not a test)
     #demo_five_card_deck_asciiart_twenty()  # (demo, not a test)
     #demo_six_card_deck_asciiart_twentyfour()  # (demo, not a test)
-    #demo_eight_card_deck_asciiart_thirtytwo()  # (demo, not a test)
-    #test_fifty_two_card_deck_numerical_once()  # PASS
+    demo_eight_card_deck_asciiart_thirtytwo()  # (demo, not a test)
 
 # TODO: Add test cases which deliberately pass invalid arguments to the
 # xshuffle module. There is robust argument validation in the module, but
@@ -46,7 +46,15 @@ def run_demos_and_tests():
 #
 # OBSERVATION: restoration_interval is 6
 #
+# NOTE: This test PASSES, but really it SHOULD FAIL. The calculated
+# restoration_interval is reported to be 3, but it is observed to in fact
+# be 6. Since the optimization calcultions look for the highest multiple
+# of the restoration_interval which fits within the requested rounds, then
+# the algorithm in this case 'gets lucky' and returns the correct value
+# of effective_rounds. The fact is, we are not calculating
+# restoration_interal correctly in the current optimization algorithm.
 def test_six_card_deck_twentyfive_optim_notoptim():
+    print("\nRUNNING TEST: test_six_card_deck_twentyfive_optim_notoptim")
     six_card_deck = ['A', 'B', 'C', 'D', 'E', 'F']
     # Ensure optimization is off
     xshuffle.set_optimized_shuffling(False)
@@ -80,6 +88,7 @@ def test_six_card_deck_twentyfive_optim_notoptim():
 # ALGORITHM INCORRECT: restoration_interval calculated as 7
 #
 def test_seven_card_deck_twentyfive_optim_notoptim():
+    print("\nRUNNING TEST: test_seven_card_deck_twentyfive_optim_notoptim")
     seven_card_deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
     # Ensure optimization is off
     xshuffle.set_optimized_shuffling(False)
@@ -111,6 +120,7 @@ def test_seven_card_deck_twentyfive_optim_notoptim():
 # OBSERVATION: restoration_interval is 4
 #
 def test_eight_card_deck_fortythree_optim_notoptim():
+    print("\nRUNNING TEST: test_eight_card_deck_fortythree_optim_notoptim")
     eight_card_deck = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'E']
     # Ensure optimization is off
     xshuffle.set_optimized_shuffling(False)
