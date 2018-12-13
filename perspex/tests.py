@@ -1,14 +1,12 @@
 #! /usr/bin/env python3
 
-# NOTE: TEST SUITES are configured/run at the end of this file.
-
 import xshuffle
 import json  # For comparison of hypothetical complex (nested dict) cards
 
-VERBOSE = False
+VERBOSE = True
 # Set 'VERBOSE' to True to see verbose output from the 
 # xshuffle module as it operates.
-# This may also enable some additional output from this test script.
+# This may also enable some additional output from THIS test script.
 if VERBOSE:
     xshuffle.set_verbose(True)
 
@@ -19,6 +17,19 @@ if VERBOSE:
 # NOTE: All tests in this file should have the same results when performed
 # both with and without optimization.
 xshuffle.set_optimized_shuffling(True)
+
+
+################################## TEST SUITE ##################################
+
+
+# If desired, specific tests can be disabled by commenting them out here.
+# This function is called at the very end of this file.
+# See code comments near the function for each demo/test for details.
+def run_demos_and_tests():
+    demo_five_card_deck_asciiart_twenty()
+    demo_eight_card_deck_asciiart_thirtytwo()
+    test_fifty_two_card_deck_numerical_once()
+    test_one_card_deck_complex()
 
 
 #################################### TESTS #####################################
@@ -45,6 +56,8 @@ def demo_five_card_deck_asciiart_twenty():
     shuffled_deck = xshuffle.shuffle(deck_of_five_ascii_art_cards, 20)
     if not VERBOSE:  # Restore the VERBOSITY setting of the test file
         xshuffle.set_verbose(False)
+
+    print("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
 
 
 # ---------------------------------------------------------------------------- #
@@ -74,6 +87,8 @@ def demo_eight_card_deck_asciiart_thirtytwo():
     shuffled_deck = xshuffle.shuffle(deck_of_eight_ascii_art_cards, 32)
     if not VERBOSE:  # Restore the VERBOSITY setting of the test file
         xshuffle.set_verbose(False)
+
+    print("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
 
 
 # ---------------------------------------------------------------------------- #
@@ -114,6 +129,8 @@ def test_fifty_two_card_deck_numerical_once():
         'fifty-two card deck numerical test failed ' \
             '(rounds used: 1)'  # This test only supports 1 round
 
+    print("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
+
 
 # ---------------------------------------------------------------------------- #
 
@@ -152,11 +169,9 @@ def test_one_card_deck_complex():
             f"one card deck shuffle returned a complex card which had " \
                 f"some difference in it. (rounds used: {rounds_to_shuffle})"
 
+    print("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
 
-################################## TEST SUITE ##################################
 
-demo_five_card_deck_asciiart_twenty()
-#demo_eight_card_deck_asciiart_thirtytwo()
-#test_fifty_two_card_deck_numerical_once()
-#test_one_card_deck_complex()
+# ---------------------------------------------------------------------------- #
 
+run_demos_and_tests()

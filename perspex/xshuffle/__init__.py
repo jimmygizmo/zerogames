@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import math
 
 verbose = False
 optimize_algorithm = False
@@ -34,27 +35,43 @@ def shuffle(deck, rounds_to_shuffle):
     type of object, representing the cards. The deck will be shuffled 
     rounds_to_shuffle times. One round exhausts all cards in the 
     supplied deck as defined in shuffle_one_round()."""
+
     if (type(rounds_to_shuffle) is not int
         or rounds_to_shuffle < 0):
             raise ValueError('rounds_to_shuffle argument must be a'
                 'postitive integer.')
+
     if (type(deck) is not list):
             raise TypeError('deck must be a list.')
-    if (rounds_to_shuffle == 0 or len(deck) == 0):  # Allowed
+
+    # The follwoing arguments are allowed but will result in no operations
+    # being performed or an identical deck being returned, not bad arguments
+    # per se, but appropriate to simply return the unaltered deck right here.
+    # In fact, a deck with one card is not supported by the current optimization
+    # calculations (in addition to being irrelevant and having no efffect)
+    # hence, to prevent the resulting error in optimization calculations, that is
+    # in fact the strongest reason to return here for a deck with one card.
+    if (rounds_to_shuffle == 0 or len(deck) == 0 or len(deck) == 1):
         return deck
     
-    effective_rounds = rounds_to_shuffle
+    effective_rounds = rounds_to_shuffle  # Prior to any optimization
     if optimize_algorithm:
         number_of_cards = len(deck)
         effective_rounds = optimze_rounds(number_of_cards, rounds_to_shuffle)
         if verbose:
-            print('ALGORITHM OPTIMISATION IS ON')
+            print('ALGORITHM OPTIMIZATION IS ON')
             print('The actual (effective) rounds_to_shuffle which will be '
                 'used will be the minimum possible number of rounds required '
                 'to achieve the exact same deck state as the requested number '
                 'of rounds would achieve.')
             print(f"Requested rounds_to_shuffle: {rounds_to_shuffle}")
             print(f"Effective rounds to be used: {effective_rounds}")
+
+    if (effective_rounds == 0):
+        print(f"Optimization has determined that the requested rounds_to_shuffle "
+            " would return the deck to its original state. Returning the "
+            " original deck. No shuffling performed.")
+        return deck
 
     if verbose:
         print(f"\nShuffling deck with {len(deck)} cards, "
@@ -71,7 +88,7 @@ def shuffle(deck, rounds_to_shuffle):
     # were greater than one rounds used prior to the reuse of the variable.
     # The bug is caused by using a = deck, instead of a = deck.copy().
 
-    # * IMPORTANT POSSIBLE OPTIMIZATION DESCRIBED HERE *
+    # * ANOTHER IMPORTANT POSSIBLE OPTIMIZATION DESCRIBED HERE *
     # NOTE that we use references to the deck/stacks heavily from here on
     # because this minimizes copying of data. Specifically, the inner
     # functions of shuffle_one_round() and perform_shuffle_unit() operate
@@ -99,8 +116,9 @@ def shuffle(deck, rounds_to_shuffle):
         shuffle_one_round(a, b)
         if verbose:
             show_stack(b, f"\nROUND: {round}")
-        # TODO: Look for a way to eliminate this need for list.copy()
-        a = b.copy()  #  Move stack b to stack a position
+        # TODO: The OPTIMIZATION described just above here is a possible
+        # way to eliminate this list.copy().
+        a = b.copy()  #  Move stack b to stack a position VIA COPY
         b = []  # Stack b is now empty
         # We cannot simply say a = b above here, as this just copies
         # the reference which immediately thereafter is reset
@@ -110,12 +128,14 @@ def shuffle(deck, rounds_to_shuffle):
         # POSSIBLE OPTIMIZATION THEORIZED (DISCUSSED ABOVE ALSO):
         # 1. Check len(a) vs len(b) and call one of the following
         #     with the stack containing cards in the first position:
-        #     shuffle_one_round(a, b)
+        #     shuffle_one_round(a, b) OR
         #     shuffle_one_round(b, a)
         # As an important step to avoid confusion, rename vars in
         # the called subs to:
         # a -> start_stack
         # b -> end_stack
+        # * This renaming was done in preparation, but this particular
+        # optimization has not yet been attempted/implemented.
         round += 1
     
     return a
@@ -125,6 +145,7 @@ def shuffle_one_round(start_stack, end_stack):
     """Shuffle one round, meaning perform as many 'shuffle units' as 
     necessary to exhaust all original cards in start_stack with all 
     cards ending up in end_stack."""
+
     while (len(start_stack) > 0):
         perform_shuffle_unit(start_stack, end_stack)
     return
@@ -139,10 +160,7 @@ def perform_shuffle_unit(start_stack, end_stack):
     2. Move the card from the bottom of start_stack to the top of start_stack.
     """
     
-    card_from_top_of_start_stack = start_stack.pop(0)
-    end_stack.insert(0, card_from_top_of_start_stack)
-    # Optimized:
-    # end_stack.insert(0, start_stack.pop(0))
+    end_stack.insert(0, start_stack.pop(0))
     
     # If one card is left then this step will have no effect and
     # we just return for efficiency sake. If there are no cards left
@@ -150,18 +168,90 @@ def perform_shuffle_unit(start_stack, end_stack):
     if (len(start_stack) < 2):
         return
     else:
-        card_from_top_of_start_stack = start_stack.pop(0)
-        start_stack.append(card_from_top_of_start_stack)
-        # Optimized:
-        # start_stack.append(start_stack.pop(0))
+        start_stack.append(start_stack.pop(0))
 
     return
 
 
+# OPTIMIZATION OF SHUFFLING ROUNDS
+#
+# Because of the nature of the shuffling algorithim in xshuffle,
+# generally speaking, the deck will be shuffled all the way back to
+# its original state after a certain number of rounds, DEPENDING
+# upon the number of cards in the deck and also DEPENDING on whether
+# there is an odd or an even number of cards in the deck.
+# We will call the shuffling round interval at which a deck with a
+# given number of cards returns to its original state/order, the
+# 'restoration_interval'.
+#
+# One can see that the states of the deck after each round are also
+# identical as rounds progress, such that we can say, the state after
+# round 1 will be identical to the state after restoration_interval + 1.
+# The state of the deck is a repeating cycle, which is sort of intuitively
+# obvious because our shuffling method uses a fixed set of steps where
+# the same input always gives the same output.
+#
+# These facts give us the opportunity to avoid unnecessary rounds of shuffling.
+# One can acheive the exact same state in a deck as would be acheived by
+# repeat_cycles * restoration_interval + x
+# as would be acheived by simply shuffling for x rounds.
+# This is the optimization.
+#
+# The other important consideration is how restoration_interval is determined.
+# Through experimentation/observation or through mathematical reasoning,
+# one discovers that there are two rules:
+# 1. When the deck contains an EVEN number of cards,
+#    The restoration_interval = one half of the number of cards
+# 2. When the deck contains an ODD number of cards,
+#    The restoration interval = the number of cards.
+#
+# Of course if the rounds_to_shuffle value is lower than the restoration_interval,
+# then restoration will not be observed and no optimization is possible, which is
+# why I qualified this description at the beginning with 'generally speaking.'
+# 
+# To implement the optimization, this function performs the needed calculations
+# and adjusts rounds_to_shuffle to its minimum possible value to acheive the
+# exact same stte of the card deck, avoiding unnecessary shufling rounds.
+# The optimized value is reterned and used as 'effective_rounds'.
 def optimze_rounds(number_of_cards, rounds_to_shuffle):
-    # NOT YET IMPLEMENTED
-    # TODO: Issue warning if no optimization was possible
-    return rounds_to_shuffle
+    if number_of_cards % 2 == 0:
+        # Even number of cards
+        restoration_interval = int(number_of_cards / 2)
+    else:
+        # Odd number of cards
+        restoration_interval = number_of_cards
+    if verbose:
+        print(f"\nRESTORATION INTERVAL FOR THIS DECK: {restoration_interval}")
+
+    # We need to determine how many WHOLE restoration intervals fit into
+    # the requested rounds_to_shuffle. This will be called 'repetitions'.
+    repetitions = int(math.floor(rounds_to_shuffle / restoration_interval))
+    if verbose:
+        print(f"\nREPETTITIONS SEEN IN OPTIMIZATION ANALYSIS: {repetitions}")
+    
+    # potential_alst_restoraiton is the highest round number which will result
+    # in the deck returning to its original state and by the nature of our
+    # calculations, this will always be less than or equal to the value of
+    # rounds_to_shuffle. We call it 'potential' because we wont actually do that
+    # many rounds (or more, either) since we are optimizing.
+    potential_last_restoration = repetitions * restoration_interval
+    if verbose:
+        print(f"\nTHE POTENTIAL LAST RESTORATION ROUND WOULD "
+            f"BE: {potential_last_restoration}")
+    
+    # If we subtract potential_last_restoration from rounds_to_shuffle
+    # the result is the 'effective' rounds to shuffle, use as
+    # the 'effective_rounds' variable.
+
+    effective_rounds = rounds_to_shuffle - potential_last_restoration
+    if verbose:
+        print(f"\nOPTIMIZED/EFFECTIVE ROUNDS TO SHUFFLE ARE: {effective_rounds}")
+    
+    # TODO: Maybe issue warning if no optimization was possible, perhaps because the
+    # rounds_to_shuffle was lower than the restoration_interval, meaning that
+    # not enough rounds were requested to result in any repetition of deck state
+    # and thus no opportunity to optimize.
+    return effective_rounds
 
 
 if __name__ == '__main__':
