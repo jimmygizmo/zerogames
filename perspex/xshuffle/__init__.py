@@ -8,6 +8,12 @@ optimize_algorithm = False
 
 
 def set_verbose(verbose_on=True):
+    """Turn verbose output on or off. Verbosity is off by
+    default. If this function is called with no argument, it will
+    turn verbosity on.
+    
+    Args: single argument (boolean)"""
+
     # For a simple module/program, limited use of global variables
     # in this manner for module runtime configuration is fine.
     global verbose
@@ -18,6 +24,12 @@ def set_verbose(verbose_on=True):
 
 
 def set_optimized_shuffling(optimize_on=True):
+    """Turn shuffling optimization on or off. Optimization is off by
+    default. If this function is called with no argument, it will
+    turn optimization on.
+    
+    Args: single argument (boolean)"""
+
     global optimize_algorithm
     if optimize_on:
         optimize_algorithm = True
@@ -26,6 +38,16 @@ def set_optimized_shuffling(optimize_on=True):
 
 
 def show_stack(stack, description):
+    """Prints out a stack of cards from top card to bottom card with
+    a description printed above the stack. 'Stack' is more accurate
+    here than 'deck' as this function may be used on partial decks
+    during sorting.
+    
+    Args:
+        stack (list):  a list of card objects of a printable type
+        description (string):  a descriptive string to print
+            above the printed stack."""
+
     print(description)
     [ print(card) for card in stack ]
 
@@ -34,7 +56,13 @@ def shuffle(deck, rounds_to_shuffle):
     """Shuffle a deck of cards. The deck argument can be a list of any 
     type of object, representing the cards. The deck will be shuffled 
     rounds_to_shuffle times. One round exhausts all cards in the 
-    supplied deck as defined in shuffle_one_round()."""
+    supplied deck as defined in shuffle_one_round().
+
+    Args:
+        deck (list): a list of card objects of any type
+        rounds_to_shuffle (int): a positive integer indicating the
+            number of rounds to shuffle. May be optimized to less
+            rounds when optimization is on and possible."""
 
     if (type(rounds_to_shuffle) is not int
         or rounds_to_shuffle < 0):
@@ -146,7 +174,19 @@ def shuffle(deck, rounds_to_shuffle):
 def shuffle_one_round(start_stack, end_stack):
     """Shuffle one round, meaning perform as many 'shuffle units' as 
     necessary to exhaust all original cards in start_stack with all 
-    cards ending up in end_stack."""
+    cards ending up in end_stack. Note that in this case lists are
+    passed by reference and this is very much by design to avoid
+    unnecessary data replication. This behavior is automatic for
+    mutable objects like lists. When this function concludes,
+    no cards/items will remain in start_stack and all cards/items will
+    be in the (one round) shuffled state in end_stack.
+    
+    Args:
+        start_stack (list): the stack (or deck) with the cards in it
+        end_stack (list): an empty stack/list which will receive
+            all the cards during shuffling.
+            
+     Returns: Nothing. Operates on stacks/lists via reference."""
 
     while (len(start_stack) > 0):
         perform_shuffle_unit(start_stack, end_stack)
@@ -160,7 +200,17 @@ def perform_shuffle_unit(start_stack, end_stack):
     start_stack and no cards in end_stack, the specific steps are:
     1. Move the card from the top of start_stack to the top of end_stack.
     2. Move the card from the bottom of start_stack to the top of start_stack.
-    """
+
+    Note that in this case lists are passed by reference and this is very much
+    by design to avoid unnecessary data replication. This behavior is automatic for
+    mutable objects like lists.
+
+    Args:
+        start_stack (list): a stack/list with at least one item/card in it
+        end_stack (list): a stack/list which may or may not have any cards in it
+            depending where we are in the shuffling process.
+    
+    Returns: Nothing. Operates on stacks/lists via reference."""
     
     end_stack.insert(0, start_stack.pop(0))
     
@@ -216,6 +266,21 @@ def perform_shuffle_unit(start_stack, end_stack):
 # exact same stte of the card deck, avoiding unnecessary shufling rounds.
 # The optimized value is reterned and used as 'effective_rounds'.
 def optimze_rounds(number_of_cards, rounds_to_shuffle):
+    """Calculate an optimized number of rounds to shuffle if possible and
+    and return that number. NOTE: This algorithm is known to be broken for
+    some/many (but not all) values of number_of_cards. The problem lies
+    in the calculation of restoration_interval. The rest of the code here should
+    work fine if a fix can be found for determining the correct restoration_interval
+    for ALL values of number_of_cards.
+    
+    Args:
+        number_of_cards (int): the number of cards in the original deck
+        rounds_to_shuffle (int): a positive integer of the requested rounds
+            to shuffle
+            
+    Returns: An optimized number of rounds to shuffle to acheive the exact
+        same results (when possible.)"""
+        
     if number_of_cards % 2 == 0:
         # Even number of cards
         restoration_interval = int(number_of_cards / 2)
