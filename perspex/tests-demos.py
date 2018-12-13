@@ -6,6 +6,8 @@ VERBOSE = True
 # Set 'VERBOSE' to True to see verbose output from the 
 # xshuffle module as it operates.
 # This may also enable some additional output from THIS test script.
+# NOTE: The demo type of test in this file will always turn on verbosity
+# while it runs, because observation is the purpose of the demos.
 if VERBOSE:
     xshuffle.set_verbose(True)
 
