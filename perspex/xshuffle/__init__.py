@@ -3,7 +3,7 @@
 import sys
 
 verbose = False
-optimize = False
+optimize_algorithm = False
 
 
 def set_verbose(verbose_on=True):
@@ -17,11 +17,11 @@ def set_verbose(verbose_on=True):
 
 
 def set_optimized_shuffling(optimize_on=True):
-    global optimize
+    global optimize_algorithm
     if optimize_on:
-        optimize = True
+        optimize_algorithm = True
     else:
-        optimize = False
+        optimize_algorithm = False
 
 
 def show_stack(stack, description):
@@ -42,9 +42,23 @@ def shuffle(deck, rounds_to_shuffle):
             raise TypeError('deck must be a list.')
     if (rounds_to_shuffle == 0 or len(deck) == 0):  # Allowed
         return deck
+    
+    effective_rounds = rounds_to_shuffle
+    if optimize_algorithm:
+        number_of_cards = len(deck)
+        effective_rounds = optimze_rounds(number_of_cards, rounds_to_shuffle)
+        if verbose:
+            print('ALGORITHM OPTIMISATION IS ON')
+            print('The actual (effective) rounds_to_shuffle which will be '
+                'used will be the minimum possible number of rounds required '
+                'to achieve the exact same deck state as the requested number '
+                'of rounds would achieve.')
+            print(f"Requested rounds_to_shuffle: {rounds_to_shuffle}")
+            print(f"Effective rounds to be used: {effective_rounds}")
+
     if verbose:
         print(f"\nShuffling deck with {len(deck)} cards, "
-            f"{rounds_to_shuffle} rounds.")
+            f"{effective_rounds} rounds.")
     
     a = deck.copy()  # This list.copy() is necessary, otherwise we can have
     # a chain of references into the callee and internal manipulations
@@ -81,7 +95,7 @@ def shuffle(deck, rounds_to_shuffle):
     if verbose:
         show_stack(a, "\nORIGINAL:")
     
-    while (round <= rounds_to_shuffle):
+    while (round <= effective_rounds):
         shuffle_one_round(a, b)
         if verbose:
             show_stack(b, f"\nROUND: {round}")
@@ -117,10 +131,13 @@ def shuffle_one_round(start_stack, end_stack):
 
 
 def perform_shuffle_unit(start_stack, end_stack):
-    """Perform one 'shuffle unit' upon the card stacks a and b. 
+    """Perform one 'shuffle unit' upon the card stacks start_stack and end_stack. 
     The 'shuffle unit' is the smallest unique set of steps which are
-    repeated upon cards being shuffled. The specific steps are: 
-    1. """
+    repeated upon cards being shuffled. Starting with all cards in
+    start_stack and no cards in end_stack, the specific steps are:
+    1. Move the card from the top of start_stack to the top of end_stack.
+    2. Move the card from the bottom of start_stack to the top of start_stack.
+    """
     
     card_from_top_of_start_stack = start_stack.pop(0)
     end_stack.insert(0, card_from_top_of_start_stack)
@@ -139,6 +156,13 @@ def perform_shuffle_unit(start_stack, end_stack):
         # start_stack.append(start_stack.pop(0))
 
     return
+
+
+def optimze_rounds(number_of_cards, rounds_to_shuffle):
+    # NOT YET IMPLEMENTED
+    # TODO: Issue warning if no optimization was possible
+    return rounds_to_shuffle
+
 
 if __name__ == '__main__':
     sys.exit(f"This file [{__file__}] is meant to be imported, "

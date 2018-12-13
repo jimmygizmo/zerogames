@@ -18,7 +18,7 @@ if VERBOSE:
 # unnecessary/redundant shuffling rounds.
 # NOTE: All tests in this file should have the same results when performed
 # both with and without optimization.
-#xshuffle.set_optimized_shuffling(True)
+xshuffle.set_optimized_shuffling(True)
 
 
 #################################### TESTS #####################################
@@ -156,7 +156,7 @@ def test_one_card_deck_complex():
 ################################## TEST SUITE ##################################
 
 demo_five_card_deck_asciiart_twenty()
-demo_eight_card_deck_asciiart_thirtytwo()
-test_fifty_two_card_deck_numerical_once()
-test_one_card_deck_complex()
+#demo_eight_card_deck_asciiart_thirtytwo()
+#test_fifty_two_card_deck_numerical_once()
+#test_one_card_deck_complex()
 
