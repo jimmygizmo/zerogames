@@ -57,13 +57,15 @@ def shuffle(deck, rounds_to_shuffle):
     effective_rounds = rounds_to_shuffle  # Prior to any optimization
     if optimize_algorithm:
         number_of_cards = len(deck)
-        effective_rounds = optimze_rounds(number_of_cards, rounds_to_shuffle)
         if verbose:
-            print('ALGORITHM OPTIMIZATION IS ON')
+            print("\nALGORITHM OPTIMIZATION IS ON")
             print('The actual (effective) rounds_to_shuffle which will be '
                 'used will be the minimum possible number of rounds required '
                 'to achieve the exact same deck state as the requested number '
                 'of rounds would achieve.')
+            
+        effective_rounds = optimze_rounds(number_of_cards, rounds_to_shuffle)
+        if verbose:
             print(f"Requested rounds_to_shuffle: {rounds_to_shuffle}")
             print(f"Effective rounds to be used: {effective_rounds}")
 
@@ -221,13 +223,13 @@ def optimze_rounds(number_of_cards, rounds_to_shuffle):
         # Odd number of cards
         restoration_interval = number_of_cards
     if verbose:
-        print(f"\nRESTORATION INTERVAL FOR THIS DECK: {restoration_interval}")
+        print(f"\nRestoration interval for this deck: {restoration_interval}")
 
     # We need to determine how many WHOLE restoration intervals fit into
     # the requested rounds_to_shuffle. This will be called 'repetitions'.
     repetitions = int(math.floor(rounds_to_shuffle / restoration_interval))
     if verbose:
-        print(f"\nREPETTITIONS SEEN IN OPTIMIZATION ANALYSIS: {repetitions}")
+        print(f"\nRepetittions seen in optimization analysis: {repetitions}")
     
     # potential_alst_restoraiton is the highest round number which will result
     # in the deck returning to its original state and by the nature of our
@@ -236,8 +238,12 @@ def optimze_rounds(number_of_cards, rounds_to_shuffle):
     # many rounds (or more, either) since we are optimizing.
     potential_last_restoration = repetitions * restoration_interval
     if verbose:
-        print(f"\nTHE POTENTIAL LAST RESTORATION ROUND WOULD "
-            f"BE: {potential_last_restoration}")
+        if (potential_last_restoration == 0):
+            print("\nNot enough rounds were requested to see any restoration "
+                "occur in a deck of this size.")
+        else:
+            print(f"\nThe potential last restoration round would "
+                f"be: {potential_last_restoration}")
     
     # If we subtract potential_last_restoration from rounds_to_shuffle
     # the result is the 'effective' rounds to shuffle, use as
@@ -245,7 +251,7 @@ def optimze_rounds(number_of_cards, rounds_to_shuffle):
 
     effective_rounds = rounds_to_shuffle - potential_last_restoration
     if verbose:
-        print(f"\nOPTIMIZED/EFFECTIVE ROUNDS TO SHUFFLE ARE: {effective_rounds}")
+        print(f"\nOptimized/effective rounds to shuffle would be: {effective_rounds}")
     
     # TODO: Maybe issue warning if no optimization was possible, perhaps because the
     # rounds_to_shuffle was lower than the restoration_interval, meaning that
