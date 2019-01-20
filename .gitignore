@@ -2,6 +2,11 @@
 # General-purpose suggestions.
 # Leave commented-out until needed.
 
+# Python
+.venv
+__pychache__
+*.pyc
+
 
 # OSX-Generated
 .DS_Store
