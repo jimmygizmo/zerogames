@@ -1,0 +1,12 @@
+# Project-specific python dependencies
+###############################################################################
+# This requirements.txt file should be located in the root directory of this
+# (python) project.
+#
+
+asyncio==3.4.3
+
+
+##
+#
+
