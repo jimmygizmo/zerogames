@@ -7,6 +7,9 @@
 __pychache__
 *.pyc
 
+# VS Code
+.vscode
+
 
 # OSX-Generated
 .DS_Store
