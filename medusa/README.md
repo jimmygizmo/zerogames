@@ -3,6 +3,9 @@
 
 Asyncio Experimentation Project
 
+Free, public demo instance of crossbar:
+URL: wss://demo.crossbar.io/ws
+Realm: realm1
 
 ###############################################################################
 
