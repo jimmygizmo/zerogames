@@ -1,0 +1,76 @@
+Recently I noticed that diadungeon.py would throw an error about tkinter upon the attempt to import
+'turtle'.
+
+The cause of the issue and the best resolution to it, on MacOS and Linux, is being explored but until
+that can be documented, this file will contain miscellaneous notes used during the investigation.
+
+Some initial info is leading to the possibiliy that we may use Homebrew to install tcl tk.
+Note that the developer's system is using Pyenv to manage Python versions.
+Some info is indicating a need to rebuild Python using compile flags to link to TCL-Tk libraries.
+
+If Homebrew tcl-tk is used, NOTE:
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+tcl-tk is keg-only, which means it was not symlinked into /usr/local,
+because macOS already provides this software and installing another version in
+parallel can cause all kinds of trouble.
+
+If you need to have tcl-tk first in your PATH run:
+  echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find tcl-tk you may need to set:
+  export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
+  export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
+
+For pkg-config to find tcl-tk you may need to set:
+  export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+This is the full error referred to above:
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(diadungeon) ➜  diadungeon git:(master) ✗ python ./diadungeon.py
+Traceback (most recent call last):
+  File "./diadungeon.py", line 11, in <module>
+    import turtle
+  File "/Users/bilbo/.pyenv/versions/2.7.18/lib/python2.7/lib-tk/turtle.py", line 107, in <module>
+    import Tkinter as TK
+  File "/Users/bilbo/.pyenv/versions/2.7.18/lib/python2.7/lib-tk/Tkinter.py", line 39, in <module>
+    import _tkinter # If this fails your Python may not be configured for Tk
+ImportError: No module named _tkinter
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Relevant links:
+https://stackoverflow.com/questions/22550068/python-not-configured-for-tk/31299142
+
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Relevant Ubuntu solution to consider. My feeling this is close to the core issue, but we need a MacOs version
+of the solution. (I've alread installed Homebrew tcl-tk .. need to link this to our Pyenv installed pythons somehow .. with build flags?:
+Below here is an excerpt from:
+https://stackoverflow.com/questions/22550068/python-not-configured-for-tk/31299142
+--------------------------------------------------------------------------------------------------------
+You need to have the Tk development files/headers available during pyenv install.
+
+On Ubuntu (15.04) the following should provide them: sudo apt-get install tk-dev.
+
+After this, pyenv install 3.4.3 (or pyenv install 2.7.10 etc) should pick it up and have support for Tk.
+--------------------------------------------------------------------------------------------------------
+
+Even better excerpt from the above link:
+--------------------------------------------------------------------------------------------------------
+This is a guide for Mac users,
+
+Uninstall your python version. For example: pyenv uninstall 3.7.2
+Install TK: brew install tcl-tk
+Follow the post install steps and config tk:
+export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
+export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
+export PATH=$PATH:/usr/local/opt/tcl-tk/bin
+Reload your terminal session and make sure all settings above are correctly set
+Install python: pyenv install 3.7.2
+The TK should work now
+--------------------------------------------------------------------------------------------------------
+
+

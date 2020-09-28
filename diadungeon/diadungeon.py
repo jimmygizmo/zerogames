@@ -1,12 +1,14 @@
 #! /usr/bin/env python
 # This program is intended to use Python 2 and modules installed under Python 2
 
-import signal
-import sys
-import turtle
+
 import math
 import random
+import signal
+import sys
 import time
+
+import turtle
 
 DEBUG = True
 
